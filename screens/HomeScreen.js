@@ -1,12 +1,17 @@
-import * as WebBrowser from "expo-web-browser";
 import React, { useState } from "react";
-import { StyleSheet, TouchableOpacity, Text, TextInput, View, Alert } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  TextInput,
+  View
+} from "react-native";
 
 export default function HomeScreen(props) {
   const [username, setUsername] = useState("");
   const [repo, setRepo] = useState("");
 
-  const {navigate} = props.navigation;
+  const { navigate } = props.navigation;
 
   return (
     <View style={styles.container}>
@@ -24,16 +29,17 @@ export default function HomeScreen(props) {
       />
       <TouchableOpacity
         style={styles.button}
-        onPress={() =>navigate("Chat", {username, repo})}
+        disabled={username.trim().length === 0 || repo.trim().length === 0}
+        onPress={() => navigate("Chat", { username, repo })}
       >
-        <Text>Login</Text>
+        <Text>Join chat</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 HomeScreen.navigationOptions = {
-  title: "Home"
+  title: "Github Collab"
 };
 
 const styles = StyleSheet.create({
@@ -56,8 +62,8 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
     padding: 10
   }
 });

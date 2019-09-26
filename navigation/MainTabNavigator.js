@@ -44,7 +44,7 @@ const GithubStack = createStackNavigator(
 );
 
 GithubStack.navigationOptions = {
-  tabBarLabel: 'Github',
+  tabBarLabel: 'Activity',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-git-branch' : 'md-git-branch'} />
   ),
