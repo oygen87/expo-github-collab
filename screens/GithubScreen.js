@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { ScrollView, Alert, StyleSheet } from "react-native";
+import { ScrollView, Text, Alert, StyleSheet } from "react-native";
 import { RepoContext } from "../Context/RepoContext";
 import Event from "../components/Event";
 
@@ -8,6 +8,7 @@ export default function GithubScreen() {
   const [repo, _] = useContext(RepoContext);
 
   const fetchData = () => {
+    console.log(repo);
     fetch(`https://githubcollabapp.herokuapp.com/github-events/`, {
       method: "POST",
       body: JSON.stringify({ repo }),
@@ -18,17 +19,17 @@ export default function GithubScreen() {
       .then(res => {
         if (res.ok) {
           res.json().then(evts => {
-            if (
+            /*if (
               events.length > 0 &&
               JSON.stringify(this.events) !== JSON.stringify(evts)
             ) {
-              /*this.newEvents = true;
+              this.newEvents = true;
               setTimeout(() => (this.newEvents = false), 2000);
             } else {
-              this.newEvents = false;*/
-            }
-
-            setEvents(evts);
+              this.newEvents = false;
+            }*/
+            if (JSON.stringify(events) !== JSON.stringify(evts))
+              setEvents(evts);
           });
         } else {
           Alert("Repository is private or not found");
@@ -43,10 +44,20 @@ export default function GithubScreen() {
   };
 
   useEffect(() => {
+    console.log("useffect EVENTS");
     fetchData();
-    /*return () => {
-        cleanup
-      };*/
+  }, [events])
+
+  useEffect(() => {
+    const timeOutId = setInterval(() => {
+      console.log("FETCHING")
+      fetchData();
+    }, 10000);
+    return () => {
+      console.log("CLEARED");
+      setEvents([]);
+        clearInterval(timeOutId);
+      };
   }, [repo]);
 
   return (
