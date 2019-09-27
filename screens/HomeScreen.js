@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -7,10 +7,13 @@ import {
   View
 } from "react-native";
 
+import { RepoContext } from "../Context/RepoContext";
+
 export default function HomeScreen(props) {
   const [username, setUsername] = useState("");
   const [repo, setRepo] = useState("");
 
+  const [_, setContextRepository] = useContext(RepoContext);
   const { navigate } = props.navigation;
 
   return (
@@ -30,7 +33,10 @@ export default function HomeScreen(props) {
       <TouchableOpacity
         style={styles.button}
         disabled={username.trim().length === 0 || repo.trim().length === 0}
-        onPress={() => navigate("Chat", { username, repo })}
+        onPress={() => {
+          setContextRepository(repo);
+          navigate("Chat", { username, repo })
+        }}
       >
         <Text>Join chat</Text>
       </TouchableOpacity>
