@@ -4,7 +4,6 @@ import { RepoContext } from "../Context/RepoContext";
 import Event from "../components/Event";
 
 export default function GithubScreen() {
-
   const [events, setEvents] = useState([]);
   const [repo, _] = useContext(RepoContext);
 
@@ -36,28 +35,25 @@ export default function GithubScreen() {
         }
       })
       .catch(() => {
-        Alert("Internal server error" );
+        Alert("Internal server error");
       })
       .finally(() => {
         //this.isLoading = false;
       });
-    }
+  };
 
-    useEffect(() => {
-      fetchData();
-      /*return () => {
+  useEffect(() => {
+    fetchData();
+    /*return () => {
         cleanup
       };*/
-    }, [repo])
-
+  }, [repo]);
 
   return (
     <ScrollView style={styles.container}>
-      {
-        events.map(e => {
-          return <Event key={e.id} event={e}/>
-        })
-      }
+      {events.map(e => {
+        return <Event key={e.id} event={e} />;
+      })}
     </ScrollView>
   );
 }
