@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 export default function GithubScreen() {
   /**
@@ -8,19 +8,19 @@ export default function GithubScreen() {
    */
   return (
     <View style={styles.container}>
-    <Text>Github Screen</Text>
-  </View>
+      <Text>Github Screen</Text>
+    </View>
   );
 }
 
 GithubScreen.navigationOptions = {
-  title: 'Github',
+  title: "Github"
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
-    backgroundColor: '#fff',
-  },
+    backgroundColor: "#fff"
+  }
 });

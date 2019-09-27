@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   StyleSheet
 } from "react-native";
-import { useFocusState } from "react-navigation-hooks";
-
+import { KeyboardAvoidingView } from "react-native";
 import socketIOClient from "socket.io-client";
+import { YellowBox } from "react-native";
 
 import Message from "../components/Message";
 
@@ -20,7 +20,10 @@ export default function ChatScreen({ navigation }) {
   const socket = socketIOClient("https://githubcollabapp.herokuapp.com");
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const focus = useFocusState();
+
+  YellowBox.ignoreWarnings([
+    "Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?"
+  ]);
 
   useEffect(() => {
     fetch(`https://githubcollabapp.herokuapp.com/messages/`, {
@@ -32,7 +35,6 @@ export default function ChatScreen({ navigation }) {
     })
       .then(res => {
         res.json().then(r => {
-          //console.log(JSON.stringify(r));
           setMessages(r.data);
         });
       })
@@ -40,7 +42,7 @@ export default function ChatScreen({ navigation }) {
   }, [repo]);
 
   useEffect(() => {
-    scrollViewRef.current.scrollToEnd({ animated: true });
+    scrollViewRef.current.scrollToEnd();
   }, [messages]);
 
   useEffect(() => {
@@ -48,11 +50,6 @@ export default function ChatScreen({ navigation }) {
       setMessages(data);
     });
   }, [messages, socket]);
-
-  /*useEffect(() => {
-      console.log(focus);
-      console.log(navigation);
-    }, [focus])*/
 
   const handleSubmit = () => {
     socket.emit("clientMessageEvent", {
@@ -62,6 +59,7 @@ export default function ChatScreen({ navigation }) {
     });
     setMessage("");
   };
+
   return (
     <View style={styles.container}>
       <ScrollView ref={scrollViewRef}>
@@ -69,17 +67,20 @@ export default function ChatScreen({ navigation }) {
           <Message key={m._id} username={m.username} message={m.message} />
         ))}
       </ScrollView>
-      <View style={styles.sendMessageContainer}>
-        <TextInput
-          placeholder="Say hi..."
-          style={styles.input}
-          value={message}
-          onChangeText={text => setMessage(text)}
-        />
-        <TouchableOpacity style={styles.send} onPress={handleSubmit}>
-          <Text>Send</Text>
-        </TouchableOpacity>
-      </View>
+      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
+        <View style={styles.sendMessageContainer}>
+          <TextInput
+            placeholder="Say hi..."
+            multiline={true}
+            style={styles.input}
+            value={message}
+            onChangeText={text => setMessage(text)}
+          />
+          <TouchableOpacity style={styles.send} onPress={handleSubmit}>
+            <Text>Send</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }
@@ -98,16 +99,20 @@ const styles = StyleSheet.create({
     lineHeight: 50,
     fontSize: 50
   },
-  sendMessageContainer : {
-    flexDirection: "row",
-    flexWrap: "wrap"
+  sendMessageContainer: {
+    flexDirection: "row"
   },
   input: {
-    flexGrow: 6,
-    fontSize: 20
+    width: "70%",
+    fontSize: 20,
+    paddingTop: 20
   },
   send: {
     backgroundColor: "#DDDDDD",
-    padding: 20,
+    padding: 10,
+    width: "30%",
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
