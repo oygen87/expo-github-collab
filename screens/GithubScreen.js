@@ -17,20 +17,21 @@ export default function GithubScreen() {
           method: "POST",
           body: JSON.stringify({ repo }),
           headers: {
-            "Content-Type": "applicgitation/json"
+            "Content-Type": "application/json"
           }
         }
       );
+
+      if (res && res.ok) {
+        const json = await res.json();
+        return json;
+      } else {
+        Alert.alert("Repository is private or not found");
+        return null;
+      }
+      
     } catch (err) {
       Alert.alert("Internal server error");
-      return null;
-    }
-
-    if (res && res.ok) {
-      const json = await res.json();
-      return json;
-    } else {
-      Alert.alert("Repository is private or not found");
       return null;
     }
   };

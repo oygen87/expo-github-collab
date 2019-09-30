@@ -53,7 +53,7 @@ export default function ChatScreen({ navigation }) {
     socket.on(`serverMessageEvent:${repo}`, data => {
       setMessages(data);
     });
-  }, [messages, socket]);
+  }, [messages, socket, repo]);
 
   const handleSubmit = () => {
     socket.emit("clientMessageEvent", {
