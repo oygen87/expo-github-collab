@@ -9,7 +9,6 @@ export default function GithubScreen() {
   const [repo, _] = useContext(RepoContext);
 
   const fetchData = async () => {
-    console.log("fetchData() running");
     let res;
     try {
       res = await fetch(
@@ -18,7 +17,7 @@ export default function GithubScreen() {
           method: "POST",
           body: JSON.stringify({ repo }),
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "applicgitation/json"
           }
         }
       );
@@ -27,7 +26,7 @@ export default function GithubScreen() {
       return null;
     }
 
-    if (res.ok) {
+    if (res && res.ok) {
       const json = await res.json();
       return json;
     } else {
@@ -37,11 +36,9 @@ export default function GithubScreen() {
   };
 
   useEffect(() => {
-    console.log("use EVENTS");
     fetchData()
       .then(res => {
         if (res !== null && res.length !== events.length) {
-          console.log("setting EVENTS changed");
           setEvents(res);
         }
       })
@@ -50,13 +47,11 @@ export default function GithubScreen() {
   }, [events]);
 
   useEffect(() => {
-    console.log("use REPO");
     setIsLoading(true);
     const timeOutId = setInterval(() => {
       fetchData()
         .then(res => {
           if (res !== null) {
-            console.log("setting INTERVAL");
             setEvents(res);
           }
         })
@@ -64,7 +59,6 @@ export default function GithubScreen() {
         .finally(() => setIsLoading(false));
     }, 10000);
     return () => {
-      console.log("CLEARED");
       setEvents([]);
       clearInterval(timeOutId);
     };
