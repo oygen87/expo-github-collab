@@ -5,7 +5,8 @@ import {
   Text,
   TextInput,
   View,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native";
 
 import { RepoContext } from "../Context/RepoContext";
@@ -84,7 +85,7 @@ export default function HomeScreen(props) {
         }
         onPress={handleOnPress}
       >
-        <Text>Join chat</Text>
+        {isBtnDisabled ? <ActivityIndicator /> : <Text>Join Chat</Text>}
       </TouchableOpacity>
     </View>
   );
