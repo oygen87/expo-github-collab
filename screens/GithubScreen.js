@@ -1,12 +1,14 @@
 import React, { useState, useContext, useEffect } from "react";
 import { ScrollView, ActivityIndicator, Alert, StyleSheet } from "react-native";
 import { RepoContext } from "../Context/RepoContext";
+import { AuthContext } from "../Context/AuthContext";
 import Event from "../components/Event";
 
 export default function GithubScreen() {
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [repo, _] = useContext(RepoContext);
+  const [isLoggedIn, __] = useContext(AuthContext);
 
   const fetchData = async () => {
     let res;
@@ -21,15 +23,7 @@ export default function GithubScreen() {
           }
         }
       );
-
-      if (res && res.ok) {
-        const json = await res.json();
-        return json;
-      } else {
-        Alert.alert("Repository is private or not found");
-        return null;
-      }
-      
+      return await res.json();
     } catch (err) {
       Alert.alert("Internal server error");
       return null;
@@ -37,33 +31,39 @@ export default function GithubScreen() {
   };
 
   useEffect(() => {
-    fetchData()
-      .then(res => {
-        if (res !== null && res.length !== events.length) {
-          setEvents(res);
-        }
-      })
-      .catch()
-      .finally(() => setIsLoading(false));
-  }, [events]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    const timeOutId = setInterval(() => {
+    if (events.length === 0 && isLoggedIn) {
       fetchData()
         .then(res => {
-          if (res !== null) {
+          if (res !== null && res.length !== events.length) {
             setEvents(res);
           }
         })
-        .catch()
+        .catch(e => Alert.alert(e.message))
         .finally(() => setIsLoading(false));
-    }, 10000);
+    }
+  }, [events]);
+
+  useEffect(() => {
+    console.log(repo);
+    let timeOutId;
+    if (repo !== "" && isLoggedIn) {
+      setIsLoading(true);
+      timeOutId = setInterval(() => {
+        fetchData()
+          .then(res => {
+            if (res !== null) {
+              setEvents(res);
+            }
+          })
+          .catch(e => Alert.alert(e.message))
+          .finally(() => setIsLoading(false));
+      }, 10000);
+    }
     return () => {
       setEvents([]);
       clearInterval(timeOutId);
     };
-  }, [repo]);
+  }, [repo, isLoggedIn]);
 
   return (
     <ScrollView style={styles.container}>

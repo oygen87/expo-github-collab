@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import AppNavigator from './navigation/AppNavigator';
 import {RepoProvider} from "./Context/RepoContext";
+import { AuthProvider } from './Context/AuthContext';
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -23,7 +24,7 @@ export default function App(props) {
     return (
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <RepoProvider><AppNavigator /></RepoProvider>
+        <AuthProvider><RepoProvider><AppNavigator /></RepoProvider></AuthProvider>
       </View>
     );
   }

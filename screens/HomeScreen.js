@@ -1,20 +1,65 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
   Text,
   TextInput,
-  View
+  View,
+  Alert
 } from "react-native";
 
 import { RepoContext } from "../Context/RepoContext";
+import { AuthContext } from "../Context/AuthContext";
+import { useFocusState } from "react-navigation-hooks";
 
 export default function HomeScreen(props) {
   const [username, setUsername] = useState("");
   const [repo, setRepo] = useState("");
+  const [isBtnDisabled, setBtnDisabled] = useState(false);
 
   const [_, setContextRepository] = useContext(RepoContext);
+  const [__, setIsLoggedIn] = useContext(AuthContext);
+
   const { navigate } = props.navigation;
+
+  const focusState = useFocusState();
+
+  useEffect(() => {
+    if (focusState.isFocused || focusState.isFocusing) {
+      setIsLoggedIn(false);
+    }
+  }, [focusState]);
+
+  const handleOnPress = () => {
+    const checkRepoIsValid = async () => {
+      try {
+        const res = await fetch(
+          `https://githubcollabapp.herokuapp.com/github-events/`,
+          {
+            method: "POST",
+            body: JSON.stringify({ repo }),
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
+        );
+        if (!res.ok) {
+          throw new Error("Repository not found");
+        }
+      } catch (err) {
+        throw new Error(err.message);
+      }
+    };
+    setBtnDisabled(true);
+    checkRepoIsValid()
+      .then(() => {
+        setContextRepository(repo);
+        setIsLoggedIn(true);
+        navigate("Chat", { username, repo });
+      })
+      .catch(e => Alert.alert(e.message))
+      .finally(() => setBtnDisabled(false));
+  };
 
   return (
     <View style={styles.container}>
@@ -32,11 +77,12 @@ export default function HomeScreen(props) {
       />
       <TouchableOpacity
         style={styles.button}
-        disabled={username.trim().length === 0 || repo.trim().length === 0}
-        onPress={() => {
-          setContextRepository(repo);
-          navigate("Chat", { username, repo })
-        }}
+        disabled={
+          username.trim().length === 0 ||
+          repo.trim().length === 0 ||
+          isBtnDisabled
+        }
+        onPress={handleOnPress}
       >
         <Text>Join chat</Text>
       </TouchableOpacity>
