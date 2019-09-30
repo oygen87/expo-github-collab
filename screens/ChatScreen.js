@@ -5,6 +5,7 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
   StyleSheet
 } from "react-native";
 import { KeyboardAvoidingView } from "react-native";
@@ -20,12 +21,14 @@ export default function ChatScreen({ navigation }) {
   const socket = socketIOClient("https://githubcollabapp.herokuapp.com");
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   YellowBox.ignoreWarnings([
     "Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?"
   ]);
 
   useEffect(() => {
+    setIsLoading(true);
     fetch(`https://githubcollabapp.herokuapp.com/messages/`, {
       method: "POST",
       body: JSON.stringify({ repo }),
@@ -38,7 +41,8 @@ export default function ChatScreen({ navigation }) {
           setMessages(r.data);
         });
       })
-      .catch();
+      .catch()
+      .finally(() => setIsLoading(false));
   }, [repo]);
 
   useEffect(() => {
@@ -63,6 +67,7 @@ export default function ChatScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <ScrollView ref={scrollViewRef}>
+        {isLoading && <ActivityIndicator />}
         {messages.map(m => (
           <Message key={m._id} username={m.username} message={m.message} />
         ))}
