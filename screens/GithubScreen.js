@@ -11,9 +11,8 @@ export default function GithubScreen() {
   const [isLoggedIn, __] = useContext(AuthContext);
 
   const fetchData = async () => {
-    let res;
     try {
-      res = await fetch(
+      const res = await fetch(
         `https://githubcollabapp.herokuapp.com/github-events/`,
         {
           method: "POST",
@@ -44,7 +43,6 @@ export default function GithubScreen() {
   }, [events]);
 
   useEffect(() => {
-    console.log(repo);
     let timeOutId;
     if (repo !== "" && isLoggedIn) {
       setIsLoading(true);
