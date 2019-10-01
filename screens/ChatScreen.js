@@ -44,12 +44,9 @@ export default function ChatScreen({ navigation }) {
       .catch()
       .finally(() => setIsLoading(false));
   }, [repo]);
-
+  
   useEffect(() => {
     scrollViewRef.current.scrollToEnd();
-  }, [messages]);
-
-  useEffect(() => {
     socket.on(`serverMessageEvent:${repo}`, data => {
       setMessages(data);
     });
