@@ -6,6 +6,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import ChatScreen from '../screens/ChatScreen';
 import GithubScreen from '../screens/GithubScreen';
+import Colors from '../constants/Colors';
 
 const HomeStack = createStackNavigator(
   {
@@ -16,6 +17,9 @@ const HomeStack = createStackNavigator(
 HomeStack.navigationOptions = {
   tabBarVisible: false,
   tabBarLabel: 'Logout',
+  tabBarOptions: { 
+    activeTintColor: Colors.tintColor,
+  },
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -32,6 +36,9 @@ const ChatStack = createStackNavigator(
 
 ChatStack.navigationOptions = {
   tabBarLabel: 'Chat',
+  tabBarOptions: { 
+    activeTintColor: Colors.tintColor,
+  },
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-chatbubbles' : 'md-chatbubbles'} />
   ),
@@ -45,6 +52,9 @@ const GithubStack = createStackNavigator(
 
 GithubStack.navigationOptions = {
   tabBarLabel: 'Activity',
+  tabBarOptions: { 
+    activeTintColor: Colors.tintColor,
+  },
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-git-branch' : 'md-git-branch'} />
   ),

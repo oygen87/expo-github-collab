@@ -8,10 +8,11 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   YellowBox,
-  StyleSheet
+  StyleSheet,
+  Platform
 } from "react-native";
 import socketIOClient from "socket.io-client";
-
+import { Ionicons } from '@expo/vector-icons';
 import Message from "../components/Message";
 
 export default function ChatScreen({ navigation }) {
@@ -82,7 +83,7 @@ export default function ChatScreen({ navigation }) {
             onChangeText={text => setMessage(text)}
           />
           <TouchableOpacity style={styles.send} onPress={handleSubmit}>
-            <Text>Send</Text>
+          <Ionicons size={26} name={Platform.OS === 'ios' ? 'ios-send' : 'md-send'} />
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     paddingTop: 20
   },
   send: {
-    backgroundColor: "#DDDDDD",
+    backgroundColor: "#FFF",
     padding: 10,
     width: "30%",
     height: 50,
