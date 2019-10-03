@@ -6,11 +6,11 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  YellowBox,
   StyleSheet
 } from "react-native";
-import { KeyboardAvoidingView } from "react-native";
 import socketIOClient from "socket.io-client";
-import { YellowBox } from "react-native";
 
 import Message from "../components/Message";
 
@@ -44,9 +44,12 @@ export default function ChatScreen({ navigation }) {
       .catch()
       .finally(() => setIsLoading(false));
   }, [repo]);
-  
+
   useEffect(() => {
     scrollViewRef.current.scrollToEnd();
+  }, [messages]);
+  
+  useEffect(() => {
     socket.on(`serverMessageEvent:${repo}`, data => {
       setMessages(data);
     });
