@@ -13,6 +13,10 @@ export default function({repo, username}) {
   const socket = socketIOClient("https://githubcollabapp.herokuapp.com");
   const [message, setMessage] = useState("");
 
+  YellowBox.ignoreWarnings([
+    "Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?"
+  ]);
+
   const handleSubmit = () => {
     socket.emit("clientMessageEvent", {
       repo,
