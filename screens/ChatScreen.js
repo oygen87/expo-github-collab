@@ -1,19 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
-  Text,
-  TextInput,
   ScrollView,
-  TouchableOpacity,
   ActivityIndicator,
   KeyboardAvoidingView,
   YellowBox,
-  StyleSheet,
-  Platform
+  StyleSheet
 } from "react-native";
 import socketIOClient from "socket.io-client";
-import { Ionicons } from '@expo/vector-icons';
 import Message from "../components/Message";
+import SendMessage from "../components/SendMessage";
 
 export default function ChatScreen({ navigation }) {
   const username = navigation.getParam("username");
@@ -21,7 +17,6 @@ export default function ChatScreen({ navigation }) {
   const scrollViewRef = useRef(null);
   const socket = socketIOClient("https://githubcollabapp.herokuapp.com");
   const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   YellowBox.ignoreWarnings([
@@ -49,21 +44,12 @@ export default function ChatScreen({ navigation }) {
   useEffect(() => {
     scrollViewRef.current.scrollToEnd();
   }, [messages]);
-  
+
   useEffect(() => {
     socket.on(`serverMessageEvent:${repo}`, data => {
       setMessages(data);
     });
   }, [messages, socket, repo]);
-
-  const handleSubmit = () => {
-    socket.emit("clientMessageEvent", {
-      repo,
-      message,
-      username
-    });
-    setMessage("");
-  };
 
   return (
     <View style={styles.container}>
@@ -74,18 +60,7 @@ export default function ChatScreen({ navigation }) {
         ))}
       </ScrollView>
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
-        <View style={styles.sendMessageContainer}>
-          <TextInput
-            placeholder="Say hi..."
-            multiline={true}
-            style={styles.input}
-            value={message}
-            onChangeText={text => setMessage(text)}
-          />
-          <TouchableOpacity style={styles.send} onPress={handleSubmit}>
-          <Ionicons size={26} name={Platform.OS === 'ios' ? 'ios-send' : 'md-send'} />
-          </TouchableOpacity>
-        </View>
+        <SendMessage repo={repo} username={username}/>
       </KeyboardAvoidingView>
     </View>
   );
