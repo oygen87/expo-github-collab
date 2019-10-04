@@ -47,11 +47,6 @@ export default function({repo, username}) {
 }
 
 const styles = StyleSheet.create({
-  /*container: {
-      flex: 1,
-      padding: 15,
-      backgroundColor: "#fff"
-    },*/
   sendMessageContainer: {
     flexDirection: "row"
   },
