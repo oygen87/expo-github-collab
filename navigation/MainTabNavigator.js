@@ -24,7 +24,7 @@ HomeStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === "ios" ? "ios-log-out" : "md-logout"}
+      name={Platform.OS === "ios" ? "ios-log-out" : "md-log-out"}
     />
   )
 };
