@@ -4,7 +4,8 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Platform
+  Platform,
+  YellowBox
 } from "react-native";
 import socketIOClient from "socket.io-client";
 import { Ionicons } from "@expo/vector-icons";

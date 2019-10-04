@@ -16,8 +16,7 @@ import { useFocusState } from "react-navigation-hooks";
 export default function HomeScreen(props) {
   const [username, setUsername] = useState("");
   const [repo, setRepo] = useState("");
-  const [isBtnDisabled, setBtnDisabled] = useState(false);
-
+  const [showSpinner, setShowSpinner] = useState(false);
   const [_, setContextRepository] = useContext(RepoContext);
   const [__, setIsLoggedIn] = useContext(AuthContext);
 
@@ -51,7 +50,7 @@ export default function HomeScreen(props) {
         throw new Error(err.message);
       }
     };
-    setBtnDisabled(true);
+    setShowSpinner(true);
     checkRepoIsValid()
       .then(() => {
         setContextRepository(repo);
@@ -59,9 +58,29 @@ export default function HomeScreen(props) {
         navigate("Chat", { username, repo });
       })
       .catch(e => Alert.alert(e.message))
-      .finally(() => setBtnDisabled(false));
+      .finally(() => setShowSpinner(false));
   };
 
+  const getTextStyle = () => {
+    return username.trim().length === 0 ||
+      repo.trim().length === 0 ||
+      showSpinner
+      ? styles.btnTextDisabled
+      : styles.btnText;
+  };
+
+  const getBtnStyle = () => {
+    return username.trim().length === 0 || repo.trim().length === 0
+      ? styles.buttonDisabled
+      : styles.button;
+  };
+
+  const isBtnDisabled = () => {
+    return (
+      username.trim().length === 0 || repo.trim().length === 0 || showSpinner
+    );
+  };
+  
   return (
     <View style={styles.container}>
       <TextInput
@@ -77,15 +96,15 @@ export default function HomeScreen(props) {
         value={repo}
       />
       <TouchableOpacity
-        style={styles.button}
-        disabled={
-          username.trim().length === 0 ||
-          repo.trim().length === 0 ||
-          isBtnDisabled
-        }
+        style={getBtnStyle()}
+        disabled={isBtnDisabled()}
         onPress={handleOnPress}
       >
-        {isBtnDisabled ? <ActivityIndicator /> : <Text>Join Chat</Text>}
+        {showSpinner ? (
+          <ActivityIndicator />
+        ) : (
+          <Text style={getTextStyle()}>Join Chat</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -106,17 +125,33 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderWidth: 1,
     marginTop: 20,
-    marginBottom: 20
+    marginBottom: 20,
+    padding: 10
   },
   repo: {
     height: 40,
     borderColor: "gray",
-    borderWidth: 1
+    borderWidth: 1,
+    padding: 10
   },
   button: {
     marginTop: 20,
     alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10
+    backgroundColor: "#000",
+    padding: 10,
+    borderRadius: 100
+  },
+  buttonDisabled: {
+    marginTop: 20,
+    alignItems: "center",
+    backgroundColor: "#EEE",
+    padding: 10,
+    borderRadius: 100
+  },
+  btnText: {
+    color: "#FFF"
+  },
+  btnTextDisabled: {
+    color: "#AAA"
   }
 });
